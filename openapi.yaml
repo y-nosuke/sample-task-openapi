@@ -137,6 +137,7 @@ components:
         deadline:
           $ref: "#/components/schemas/NullableDeadline"
       description: タスク登録リクエスト
+      x-go-name: RegisterTaskRequestSchema
 
     TaskResponse:
       type: object
