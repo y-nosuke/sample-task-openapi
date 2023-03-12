@@ -1,0 +1,234 @@
+openapi: 3.0.3
+info:
+  title: Sample Task API
+  description: A short description of API.
+  termsOfService: http://example.com/terms/
+  contact:
+    name: API support
+    url: http://www.example.com/support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local server
+  - url: https://sample-task.dev.aws.physicist00.jp/api/v1
+    description: Development server
+  - url: https://sample-task.stg.aws.physicist00.jp/api/v1
+    description: Staging server
+  - url: https://sample-task.prd.aws.physicist00.jp/api/v1
+    description: Production server
+
+# paths オブジェクト
+paths:
+  # path item オブジェクト
+  /tasks:
+    # Operationオブジェクト
+    post: # POST
+      tags:
+        - tasks
+      operationId: registerTask
+      summary: タスク登録API
+      description: タスクを登録する。
+      parameters: []
+      requestBody: # リクエストボディ
+        $ref: "#/components/requestBodies/RegisterTaskRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/RegisterTaskResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  parameters:
+    TaskId:
+      name: taskId
+      in: path # パラメータをパス内に含める
+      description: タスクID
+      required: true
+      schema:
+        $ref: "#/components/schemas/Id"
+
+  requestBodies:
+    RegisterTaskRequest:
+      description: タスク登録リクエスト
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/RegisterTaskRequest"
+          examples:
+            RegisterTaskRequest:
+              $ref: "#/components/examples/RegisterTaskRequest"
+
+  responses:
+    RegisterTaskResponse:
+      description: タスク登録レスポンス
+      content:
+        application/json: # レスポンスの形式指定
+          schema: # スキーマ
+            $ref: "#/components/schemas/TaskResponse" # 参照するモデル
+          examples: # サンプルデータ
+            TaskResponse:
+              $ref: "#/components/examples/TaskResponse"
+
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            message: "Bad Request."
+
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            message: "Not Found."
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            message: "Internal Server Error."
+
+  examples:
+    RegisterTaskRequest:
+      value:
+        title: "task 1"
+        detail: "detail 1"
+        deadline: "2020-01-15"
+
+    TaskResponse:
+      value:
+        taskForm:
+          id: ff7052f9-6e16-f03b-f8bc-f592505de001
+          title: "task 1"
+          detail: "detail 1"
+          completed: false
+          deadline: "2020-01-15"
+          created_at: "2020-01-01T09:00:00Z"
+          updated_at: "2020-01-01T09:00:00Z"
+          version: 0
+
+  schemas: # スキーマオブジェクトの定義
+    # 個別スキーマ
+    RegisterTaskRequest: # モデル名
+      type: object # 型
+      required: # 必須フィールド
+        - title
+      properties:
+        title:
+          $ref: "#/components/schemas/Title"
+        detail:
+          $ref: "#/components/schemas/NullableDetail"
+        deadline:
+          $ref: "#/components/schemas/NullableDeadline"
+      description: タスク登録リクエスト
+
+    TaskResponse:
+      type: object
+      required:
+        - taskForm
+      properties:
+        taskForm:
+          $ref: "#/components/schemas/TaskForm"
+      description: タスクレスポンス
+
+    # 共通
+    TaskForm:
+      type: object
+      required:
+        - id
+        - title
+        - version
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        title:
+          $ref: "#/components/schemas/Title"
+        detail:
+          $ref: "#/components/schemas/NullableDetail"
+        completed:
+          $ref: "#/components/schemas/Completed"
+        deadline:
+          $ref: "#/components/schemas/NullableDeadline"
+        created_at:
+          $ref: "#/components/schemas/CreatedAt"
+        updated_at:
+          $ref: "#/components/schemas/UpdatedAt"
+        version:
+          $ref: "#/components/schemas/Version"
+      description: タスクフォーム
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      description: エラーレスポンス
+
+    Id:
+      type: string
+      format: uuid
+      description: タスクID
+
+    Title:
+      type: string
+      description: タイトル
+      minLength: 1
+      maxLength: 255
+
+    NullableDetail: # 使用先でnullable: trueを付けてもgenerator側で反映されないためNullableな項目を作る
+      type: string
+      description: 詳細
+      nullable: true
+
+    Completed:
+      type: boolean
+      description: Completed
+      nullable: true
+
+    NullableDeadline:
+      type: string
+      format: date
+      description: 期限
+      nullable: true
+      example: "2020-01-15"
+
+    CreatedAt:
+      type: string
+      format: date-time
+      description: 作成日時
+      example: "2020-01-01T09:00:00Z"
+
+    UpdatedAt:
+      type: string
+      format: date-time
+      description: 更新日時
+      example: "2020-01-01T09:00:00Z"
+
+    Version:
+      type: string
+      format: uuid
+      description: 楽観ロックバージョン
+
+tags:
+  - name: tasks
+    description: タスクに関するAPI
+
+externalDocs:
+  description: Find more info here
+  url: https://example.com

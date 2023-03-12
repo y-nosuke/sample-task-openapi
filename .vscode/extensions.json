@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "42crunch.vscode-openapi",
+    "philosowaffle.openapi-designer",
+    "redhat.vscode-yaml",
+    "esbenp.prettier-vscode",
+    "yzhang.markdown-all-in-one",
+    "shd101wyy.markdown-preview-enhanced",
+    "mermade.openapi-lint",
+    "proohit.openapi-snippets"
+  ]
+}
