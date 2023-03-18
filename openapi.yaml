@@ -44,6 +44,78 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+    get: # GET
+      tags:
+        - tasks
+      operationId: getAllTasks
+      summary: タスク一覧取得API
+      description: タスク一覧を取得する。
+      parameters: [] # リクエストパラメータ
+      responses: # レスポンス定義
+        "200": # HTTP status
+          $ref: "#/components/responses/GetAllTasksResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /tasks/{taskId}:
+    get: # GET
+      tags:
+        - tasks
+      operationId: getTask
+      summary: タスク取得API
+      description: taskIdで指定したタスクを取得する。
+      parameters:
+        - $ref: "#/components/parameters/TaskId"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetTaskResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    put: # PUT
+      tags:
+        - tasks
+      operationId: updateTask
+      summary: タスク更新API
+      description: taskIdで指定したタスクを更新する。
+      parameters:
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateTaskRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/UpdateTaskResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete: # DELETE
+      tags:
+        - tasks
+      operationId: deleteTask
+      summary: タスク削除API
+      description: taskIdで指定したタスクを削除する。
+      parameters:
+        - $ref: "#/components/parameters/TaskId"
+      responses:
+        "204":
+          description: No Content
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   parameters:
     TaskId:
@@ -66,6 +138,17 @@ components:
             RegisterTaskRequest:
               $ref: "#/components/examples/RegisterTaskRequest"
 
+    UpdateTaskRequest:
+      description: タスク更新リクエスト
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UpdateTaskRequest"
+          examples:
+            UpdateTaskRequest:
+              $ref: "#/components/examples/UpdateTaskRequest"
+
   responses:
     RegisterTaskResponse:
       description: タスク登録レスポンス
@@ -74,6 +157,36 @@ components:
           schema: # スキーマ
             $ref: "#/components/schemas/TaskResponse" # 参照するモデル
           examples: # サンプルデータ
+            TaskResponse:
+              $ref: "#/components/examples/TaskResponse"
+
+    GetAllTasksResponse:
+      description: タスク一覧取得レスポンス
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetAllTasksResponse"
+          examples:
+            GetAllTasksResponse:
+              $ref: "#/components/examples/GetAllTasksResponse"
+
+    GetTaskResponse:
+      description: タスク取得レスポンス
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/TaskResponse"
+          examples:
+            TaskResponse:
+              $ref: "#/components/examples/TaskResponse"
+
+    UpdateTaskResponse:
+      description: タスク更新レスポンス
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/TaskResponse"
+          examples:
             TaskResponse:
               $ref: "#/components/examples/TaskResponse"
 
@@ -111,6 +224,14 @@ components:
         detail: "detail 1"
         deadline: "2020-01-15"
 
+    UpdateTaskRequest:
+      value:
+        title: "task 1"
+        detail: "detail 1"
+        completed: false
+        deadline: "2020-01-15"
+        version: 0
+
     TaskResponse:
       value:
         taskForm:
@@ -122,6 +243,26 @@ components:
           created_at: "2020-01-01T09:00:00Z"
           updated_at: "2020-01-01T09:00:00Z"
           version: 0
+
+    GetAllTasksResponse:
+      value:
+        taskForms:
+          - id: ab4c93d9-9de1-4f7e-8b62-19166c73ea5c
+            title: "task 1"
+            detail: "detail 1"
+            completed: false
+            deadline: "2020-01-15"
+            created_at: "2020-01-01T09:00:00Z"
+            updated_at: "2020-01-01T09:00:00Z"
+            version: 0
+          - id: 57aecc15-9194-0de1-4074-ba8650c04e20
+            title: "task 2"
+            detail: "detail 2"
+            completed: false
+            deadline: "2020-01-17"
+            created_at: "2020-01-02T10:00:00Z"
+            updated_at: "2020-01-01T09:00:00Z"
+            version: 0
 
   schemas: # スキーマオブジェクトの定義
     # 個別スキーマ
@@ -139,6 +280,24 @@ components:
       description: タスク登録リクエスト
       x-go-name: RegisterTaskRequestSchema
 
+    UpdateTaskRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          $ref: "#/components/schemas/Title"
+        detail:
+          $ref: "#/components/schemas/NullableDetail"
+        deadline:
+          $ref: "#/components/schemas/NullableDeadline"
+        completed:
+          $ref: "#/components/schemas/Completed"
+        version:
+          $ref: "#/components/schemas/Version"
+      description: タスク更新リクエスト
+      x-go-name: UpdateTaskRequestSchema
+
     TaskResponse:
       type: object
       required:
@@ -147,6 +306,18 @@ components:
         taskForm:
           $ref: "#/components/schemas/TaskForm"
       description: タスクレスポンス
+
+    GetAllTasksResponse:
+      type: object
+      required:
+        - taskForms
+      properties:
+        taskForms:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskForm"
+      description: タスク一覧取得レスポンス
+      x-go-name: GetAllTasksResponseSchema
 
     # 共通
     TaskForm:
@@ -199,7 +370,7 @@ components:
 
     Completed:
       type: boolean
-      description: Completed
+      description: completed
       nullable: true
 
     NullableDeadline:
