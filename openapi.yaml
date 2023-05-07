@@ -348,6 +348,7 @@ components:
       type: object
       required:
         - title
+        - version
       properties:
         title:
           $ref: "#/components/schemas/Title"
@@ -355,8 +356,6 @@ components:
           $ref: "#/components/schemas/NullableDetail"
         deadline:
           $ref: "#/components/schemas/NullableDeadline"
-        completed:
-          $ref: "#/components/schemas/Completed"
         version:
           $ref: "#/components/schemas/Version"
       description: タスク更新リクエスト
