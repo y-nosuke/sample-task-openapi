@@ -303,7 +303,9 @@ components:
           detail: "detail 1"
           completed: false
           deadline: "2020-01-15"
+          created_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
           created_at: "2020-01-01T09:00:00Z"
+          updated_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
           updated_at: "2020-01-01T09:00:00Z"
           version: 0
 
@@ -315,7 +317,9 @@ components:
             detail: "detail 1"
             completed: false
             deadline: "2020-01-15"
+            created_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
             created_at: "2020-01-01T09:00:00Z"
+            updated_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
             updated_at: "2020-01-01T09:00:00Z"
             version: 0
           - id: 57aecc15-9194-0de1-4074-ba8650c04e20
@@ -323,7 +327,9 @@ components:
             detail: "detail 2"
             completed: false
             deadline: "2020-01-17"
+            created_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
             created_at: "2020-01-02T10:00:00Z"
+            updated_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
             updated_at: "2020-01-01T09:00:00Z"
             version: 0
 
@@ -387,6 +393,11 @@ components:
       required:
         - id
         - title
+        - completed
+        - created_by
+        - created_at
+        - updated_by
+        - updated_at
         - version
       properties:
         id:
@@ -399,8 +410,12 @@ components:
           $ref: "#/components/schemas/Completed"
         deadline:
           $ref: "#/components/schemas/NullableDeadline"
+        created_by:
+          $ref: "#/components/schemas/CreatedBy"
         created_at:
           $ref: "#/components/schemas/CreatedAt"
+        updated_by:
+          $ref: "#/components/schemas/UpdatedBy"
         updated_at:
           $ref: "#/components/schemas/UpdatedAt"
         version:
@@ -446,11 +461,23 @@ components:
       nullable: true
       example: "2020-01-15"
 
+    CreatedBy:
+      type: string
+      format: uuid
+      description: 作成者
+      example: "41bf333c-02d0-11ee-bf3b-0242ac140003"
+
     CreatedAt:
       type: string
       format: date-time
       description: 作成日時
       example: "2020-01-01T09:00:00Z"
+
+    UpdatedBy:
+      type: string
+      format: uuid
+      description: 更新者
+      example: "41bf333c-02d0-11ee-bf3b-0242ac140003"
 
     UpdatedAt:
       type: string
