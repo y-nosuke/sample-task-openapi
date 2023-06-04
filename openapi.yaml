@@ -292,7 +292,6 @@ components:
       value:
         title: "task 1"
         detail: "detail 1"
-        completed: false
         deadline: "2020-01-15"
         version: 0
 
