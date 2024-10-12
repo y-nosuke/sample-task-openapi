@@ -30,15 +30,15 @@ paths:
     post: # POST
       tags:
         - tasks
-      operationId: registerTask
-      summary: タスク登録API
-      description: タスクを登録する。
+      operationId: createTask
+      summary: タスク作成API
+      description: タスクを作成する。
       parameters: []
       requestBody: # リクエストボディ
-        $ref: "#/components/requestBodies/RegisterTaskRequest"
+        $ref: "#/components/requestBodies/CreateTaskRequest"
       responses:
         "201":
-          $ref: "#/components/responses/RegisterTaskResponse"
+          $ref: "#/components/responses/CreateTaskResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "500":
@@ -81,16 +81,16 @@ paths:
     put: # PUT
       tags:
         - tasks
-      operationId: updateTask
-      summary: タスク更新API
-      description: taskIdで指定したタスクを更新する。
+      operationId: editTask
+      summary: タスク編集API
+      description: taskIdで指定したタスクを編集する。
       parameters:
         - $ref: "#/components/parameters/TaskId"
       requestBody:
-        $ref: "#/components/requestBodies/UpdateTaskRequest"
+        $ref: "#/components/requestBodies/EditTaskRequest"
       responses:
         "200":
-          $ref: "#/components/responses/UpdateTaskResponse"
+          $ref: "#/components/responses/EditTaskResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
@@ -165,27 +165,27 @@ components:
         $ref: "#/components/schemas/Id"
 
   requestBodies:
-    RegisterTaskRequest:
+    CreateTaskRequest:
       description: タスク登録リクエスト
       required: true
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/RegisterTaskRequest"
+            $ref: "#/components/schemas/CreateTaskRequest"
           examples:
-            RegisterTaskRequest:
-              $ref: "#/components/examples/RegisterTaskRequest"
+            CreateTaskRequest:
+              $ref: "#/components/examples/CreateTaskRequest"
 
-    UpdateTaskRequest:
+    EditTaskRequest:
       description: タスク更新リクエスト
       required: true
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/UpdateTaskRequest"
+            $ref: "#/components/schemas/EditTaskRequest"
           examples:
-            UpdateTaskRequest:
-              $ref: "#/components/examples/UpdateTaskRequest"
+            EditTaskRequest:
+              $ref: "#/components/examples/EditTaskRequest"
 
     CompleteTaskRequest:
       description: タスク完了リクエスト
@@ -214,7 +214,7 @@ components:
                 $ref: "#/components/schemas/Version"
 
   responses:
-    RegisterTaskResponse:
+    CreateTaskResponse:
       description: タスク登録レスポンス
       content:
         application/json: # レスポンスの形式指定
@@ -244,7 +244,7 @@ components:
             TaskResponse:
               $ref: "#/components/examples/TaskResponse"
 
-    UpdateTaskResponse:
+    EditTaskResponse:
       description: タスク更新レスポンス
       content:
         application/json:
@@ -282,13 +282,13 @@ components:
             message: "Internal Server Error."
 
   examples:
-    RegisterTaskRequest:
+    CreateTaskRequest:
       value:
         title: "task 1"
         detail: "detail 1"
         deadline: "2020-01-15"
 
-    UpdateTaskRequest:
+    EditTaskRequest:
       value:
         title: "task 1"
         detail: "detail 1"
@@ -305,8 +305,8 @@ components:
           deadline: "2020-01-15"
           created_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
           created_at: "2020-01-01T09:00:00Z"
-          updated_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
-          updated_at: "2020-01-01T09:00:00Z"
+          edited_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
+          edited_at: "2020-01-01T09:00:00Z"
           version: 0
 
     GetAllTasksResponse:
@@ -319,8 +319,8 @@ components:
             deadline: "2020-01-15"
             created_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
             created_at: "2020-01-01T09:00:00Z"
-            updated_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
-            updated_at: "2020-01-01T09:00:00Z"
+            edited_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
+            edited_at: "2020-01-01T09:00:00Z"
             version: 0
           - id: 57aecc15-9194-0de1-4074-ba8650c04e20
             title: "task 2"
@@ -329,13 +329,13 @@ components:
             deadline: "2020-01-17"
             created_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
             created_at: "2020-01-02T10:00:00Z"
-            updated_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
-            updated_at: "2020-01-01T09:00:00Z"
+            edited_by: "41bf333c-02d0-11ee-bf3b-0242ac140003"
+            edited_at: "2020-01-01T09:00:00Z"
             version: 0
 
   schemas: # スキーマオブジェクトの定義
     # 個別スキーマ
-    RegisterTaskRequest: # モデル名
+    CreateTaskRequest: # モデル名
       type: object # 型
       required: # 必須フィールド
         - title
@@ -347,9 +347,9 @@ components:
         deadline:
           $ref: "#/components/schemas/NullableDeadline"
       description: タスク登録リクエスト
-      x-go-name: RegisterTaskRequestSchema
+      x-go-name: CreateTaskRequestSchema
 
-    UpdateTaskRequest:
+    EditTaskRequest:
       type: object
       required:
         - title
@@ -364,7 +364,7 @@ components:
         version:
           $ref: "#/components/schemas/Version"
       description: タスク更新リクエスト
-      x-go-name: UpdateTaskRequestSchema
+      x-go-name: EditTaskRequestSchema
 
     TaskResponse:
       type: object
@@ -396,8 +396,8 @@ components:
         - completed
         - created_by
         - created_at
-        - updated_by
-        - updated_at
+        - edited_by
+        - edited_at
         - version
       properties:
         id:
@@ -414,10 +414,10 @@ components:
           $ref: "#/components/schemas/CreatedBy"
         created_at:
           $ref: "#/components/schemas/CreatedAt"
-        updated_by:
-          $ref: "#/components/schemas/UpdatedBy"
-        updated_at:
-          $ref: "#/components/schemas/UpdatedAt"
+        edited_by:
+          $ref: "#/components/schemas/EditedBy"
+        edited_at:
+          $ref: "#/components/schemas/EditedAt"
         version:
           $ref: "#/components/schemas/Version"
       description: タスクフォーム
@@ -474,13 +474,13 @@ components:
       description: 作成日時
       example: "2020-01-01T09:00:00Z"
 
-    UpdatedBy:
+    EditedBy:
       type: string
       format: uuid
       description: 更新者
       example: "41bf333c-02d0-11ee-bf3b-0242ac140003"
 
-    UpdatedAt:
+    EditedAt:
       type: string
       format: date-time
       description: 更新日時
