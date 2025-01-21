@@ -116,44 +116,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /tasks/{taskId}/complete:
-    put: # PUT
-      tags:
-        - tasks
-      operationId: completeTask
-      summary: タスク完了API
-      description: taskIdで指定したタスクを完了に更新する。
-      parameters:
-        - $ref: "#/components/parameters/TaskId"
-      requestBody:
-        $ref: "#/components/requestBodies/CompleteTaskRequest"
-      responses:
-        "200":
-          description: Complete
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-  /tasks/{taskId}/uncomplete:
-    put: # PUT
-      tags:
-        - tasks
-      operationId: unCompleteTask
-      summary: タスク未完了API
-      description: taskIdで指定したタスクを未完了に更新する。
-      parameters:
-        - $ref: "#/components/parameters/TaskId"
-      requestBody:
-        $ref: "#/components/requestBodies/UnCompleteTaskRequest"
-      responses:
-        "200":
-          description: UnComplete
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
 components:
   parameters:
     TaskId:
@@ -186,32 +148,6 @@ components:
           examples:
             EditTaskRequest:
               $ref: "#/components/examples/EditTaskRequest"
-
-    CompleteTaskRequest:
-      description: タスク完了リクエスト
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - version
-            properties:
-              version:
-                $ref: "#/components/schemas/Version"
-
-    UnCompleteTaskRequest:
-      description: タスク未完了リクエスト
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - version
-            properties:
-              version:
-                $ref: "#/components/schemas/Version"
 
   responses:
     CreateTaskResponse:
@@ -359,6 +295,8 @@ components:
           $ref: "#/components/schemas/Title"
         detail:
           $ref: "#/components/schemas/NullableDetail"
+        completed:
+          $ref: "#/components/schemas/Completed"
         deadline:
           $ref: "#/components/schemas/NullableDeadline"
         version:
